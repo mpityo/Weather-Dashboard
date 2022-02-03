@@ -9,8 +9,30 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="" id="main-content-area">
-        <div class="">This is where the weather goes</div>
+    <div class="mx-5 mt-5 card columns" id="current-weather">
+        <div class="column is-half-mobile">
+            <div class="content columns is-gapless is-vcentered">
+                <h1 class="mb-0" id="current-temp" style="font-size: 5rem;">56</h1>
+                <div class="ml-1">
+                    <p class="" id="hi-temp">HI: 85</p>
+                    <p class="" id="low-temp">LOW: 23</p>
+                </div>
+            </div>
+            <div class="block">
+                <h2 id="conditions">Sunny</h2>
+            </div>
+        </div>
+        <div class="column is-half-mobile">
+            <div class="content">
+                <h1 class="mb-1" id="city-name" style="font-size: 3rem;">Tampa</h1>
+                <h4 class="mt-0" id="secondary-name">Florida, US</h4>
+            </div>
+            <div class="block" id="extra-info">
+                    <p>UV Index:</p>
+                    <p>Humidity:</p>
+                    <p>Wind: </p>
+            </div>
+        </div>
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
