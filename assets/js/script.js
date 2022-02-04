@@ -1,23 +1,31 @@
 var getWeatherImage = function (condition) {  
-    switch(condition) {
-
-    }
+    
 }
 var getUvIndex = function (index) {  
-
+	if (index < 3) {
+		$("#uv-index-color").addClass("has-background-success");
+		return index;
+	} else if (index > 3 && index < 7) {
+		$("#uv-index-color").addClass("has-background-warning");
+		return index;
+	} else if (index > 7) {
+		$("#uv-index-color").addClass("has-background-danger");
+		return index;
+	}
 }
 
 var updateWeatherInfo = function (data) {
     $("#current-weather").addClass("card");
     $("#5-day").addClass("card");
-	$("#current-temp").text(Math.round(data.main.temp));
-	$("#hi-temp").text("HI: " + Math.round(data.main.temp_max));
-	$("#low-temp").text("LOW: " + Math.round(data.main.temp_min));
-    $("#uv-index").text("UV Index: " + getUvIndex(Math.round()));
-    $("#humidity").text("Humidity: " + Math.round(data.main.humidity) + "%");
-    $("#wind").text("Wind speed: " + Math.round(data.wind.speed) + " MPH");
-    $("#conditions").text(data.weather.main);
-    $("#weather-image").attr('src', 'http://openweathermap.org/img/wn/' + data.weather.icon + '@4x.png');
+	$("#current-temp").text(Math.round(data.current.temp));
+	$("#hi-temp").text("HI: " + Math.round(data.daily[0].temp.max));
+	$("#low-temp").text("LOW: " + Math.round(data.daily[0].temp.min));
+	$("#uv-index-container").text("UV Index: ");
+    $("#uv-index").text(getUvIndex(data.current.uvi));
+    $("#humidity").text("Humidity: " + Math.round(data.current.humidity) + "%");
+    $("#wind").text("Wind speed: " + Math.round(data.current.wind_speed) + " MPH");
+    $("#conditions").text(data.weather[0].main);
+    $("#weather-image").attr('src', 'http://openweathermap.org/img/wn/' + data.current.weather.icon + '@4x.png');
 }
 
 var getWeatherInfo = function (areaOfSearch) {
@@ -37,11 +45,10 @@ var getWeatherInfo = function (areaOfSearch) {
 			response.json().then(function(data) {
 				if (data.length > 0) {
                     $("#city-name").text(data[0].name);
-                    $("#secondary-name").text(data[0].country);
+                    $("#secondary-name").text(data[0].state +", " + data[0].country);
                     var lat = data[0].lat;
                     var lon = data[0].lon;
-                    console.log(data);
-                    var weatherApi = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + appid + "&units=imperial";
+                    var weatherApi = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude=hourly,alerts&appid=" + appid + "&units=imperial";
                     fetch(weatherApi).then(function(response) {
                         if (response.ok) {
                             response.json().then(function(data) {
@@ -65,3 +72,5 @@ $("#display-iframe").click(function () {
     var lookUp = $(".input").val().split(",");
     getWeatherInfo(lookUp);
 });
+
+getWeatherInfo(["London"]);
