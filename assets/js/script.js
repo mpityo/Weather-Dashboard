@@ -39,8 +39,8 @@ var getUvIndex = function (index) {
 }
 
 var updateWeatherInfo = function (data) {
+    // current weather
     $("#current-weather").addClass("card");
-    $("#5-day").addClass("card");
 	$("#current-temp").text(Math.round(data.current.temp) + "\u00B0");
 	$("#hi-temp").text("HI: " + Math.round(data.daily[0].temp.max));
 	$("#low-temp").text("LOW: " + Math.round(data.daily[0].temp.min));
@@ -48,7 +48,46 @@ var updateWeatherInfo = function (data) {
     $("#humidity").text("Humidity: " + Math.round(data.current.humidity) + "%");
     $("#wind").text("Wind speed: " + Math.round(data.current.wind_speed) + " MPH");
     $("#conditions").text(data.current.weather[0].main);
-    $("#weather-image").addClass(getWeatherImage("Rain"));//data.current.weather[0].main));
+    $("#weather-image").addClass(getWeatherImage(data.current.weather[0].main));
+
+        $("#5-day-container").remove();
+        var containerEle = document.createElement("div");
+        containerEle.className = "columns is-flex content";
+        containerEle.id = "5-day-container";
+
+        var headerEl = document.createElement("div");
+        headerEl.classList = "content pt-5 pl-4";
+        var textEl = document.createElement("h2");
+        textEl.textContent = "Looking to the next 5 days:";
+        headerEl.appendChild(textEl);
+
+        $("#5-day").append(headerEl);
+        $("#5-day").append(containerEle);
+
+    // 5 day forecast
+    for (var i = 0; i < 5; i++) {
+        var containerEl = document.createElement("div");
+        containerEl.className = "column five-day content";
+        containerEl.id = "day-" + (i+1);
+
+        var dateEl = document.createElement("h2");
+        dateEl.textContent = "Day " + (i+1);
+
+        var weatherImageEl = document.createElement("i");
+        weatherImageEl.className = "fa fa-2x " + getWeatherImage(data.daily[i].weather[0].main);
+
+        var temperatureEl = document.createElement("p");
+        temperatureEl.textContent = "Temp: " + Math.round(data.daily[i].temp.day) + "\u00B0";
+
+        var windSpeedEl = document.createElement("p");
+        windSpeedEl.textContent = "Wind: " + Math.round(data.daily[i].wind_speed) + " MPH";
+
+        var humidityEl = document.createElement("p");
+        humidityEl.textContent = "Humidity: " + Math.round(data.daily[i].humidity) + "%";
+
+        $(containerEl).append(dateEl, weatherImageEl, temperatureEl, windSpeedEl, humidityEl);
+        $("#5-day-container").append(containerEl);
+    }
 }
 
 var loadFromStorage = function (city) {
@@ -95,7 +134,7 @@ var getWeatherInfo = function (areaOfSearch) {
                                 updateWeatherInfo(data);
                             });
                         } else {
-                            alert("Coordinated did not find a response");
+                            alert("Coordinates did not find a response");
                         }
                     });
                 } else {
