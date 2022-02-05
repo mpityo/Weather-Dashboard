@@ -75,10 +75,10 @@ var updateWeatherInfo = function (data) {
     $("#5-day").append(headerEl);
     $("#5-day").append(containerEle);
 
-    // create each day
+    // create each day for forecast
     for (var i = 0; i < 5; i++) {
         var containerEl = document.createElement("div");
-        containerEl.className = "column five-day content is-flex-shrink-0";
+        containerEl.className = "column ml-2 mr-2 five-day content is-flex-shrink-0";
         containerEl.id = "day-" + (i+1);
 
         var dateEl = document.createElement("h4");
@@ -104,10 +104,14 @@ var updateWeatherInfo = function (data) {
 var addRecentCity = function (index) {
     var textBtn = document.createElement("button");
     textBtn.classList = "px-3 recent-city-list";
-    textBtn.id = index;
+    textBtn.id = recentCities[index].city;
     textBtn.textContent = recentCities[index].city + ", " + recentCities[index].state + " " + recentCities[index].country;
 
-    document.querySelector(".recent-cities").appendChild(textBtn);
+    if (index == 0) {
+        document.querySelector(".recent-cities").append(textBtn);
+    } else {
+        document.querySelector(".recent-cities").appendChild(textBtn);
+    }
 }
 
 var loadFromStorage = function () {
@@ -124,8 +128,8 @@ var saveToStorage = function (locationInfo) {
     if (recentCities) {
         // if there's 10 saved, delete oldest one
         if (recentCities.length > 9) {
-            recentCities.splice(0, 1);
-            $("#" + 0).remove();
+            $("#" +recentCities[9].city).remove();
+            recentCities.splice(9, 1);
         }
 
         var cityNeedsAdded = true;
@@ -136,9 +140,9 @@ var saveToStorage = function (locationInfo) {
                 return;
             }
         }
-        if (cityNeedsAdded) {
-            recentCities.push(locationInfo);
-            addRecentCity(i);
+        if (cityNeedsAdded === true) {
+            recentCities.unshift(locationInfo);
+            addRecentCity(0);
         }
     // there are no cities saved to local storage yet
     } else {
@@ -200,8 +204,13 @@ $("#search").on("click", function () {
 });
 
 $(".recent-cities").on("click", function (callback) {  
-    var index = callback.target.id;
-    var translate = [recentCities[index].city, recentCities[index].state, recentCities[index].country];
+    var idOfButton = callback.target.id;
+    for (var i = 0; i < recentCities.length; i++) {
+        if (recentCities[i].city == idOfButton) {
+            var translate = [recentCities[i].city, recentCities[i].state, recentCities[i].country];
+            i = recentCities.length;
+        }
+    }
     getWeatherInfo(translate);
 })
 
