@@ -1,3 +1,6 @@
+$("#current-date").text(dayjs().format('dddd MMMM D, YYYY'));
+var recentCities = [];
+
 var getWeatherImage = function (condition) {  
     switch (condition) {
         case "Clouds":
@@ -39,39 +42,47 @@ var getUvIndex = function (index) {
 }
 
 var updateWeatherInfo = function (data) {
-    // current weather
+    // current weather in top card
     $("#current-weather").addClass("card");
 	$("#current-temp").text(Math.round(data.current.temp) + "\u00B0");
 	$("#hi-temp").text("HI: " + Math.round(data.daily[0].temp.max));
 	$("#low-temp").text("LOW: " + Math.round(data.daily[0].temp.min));
+    $("#uv-index-wordage").text("UV Index: ");
     $("#uv-index").text(getUvIndex(data.current.uvi));
     $("#humidity").text("Humidity: " + Math.round(data.current.humidity) + "%");
     $("#wind").text("Wind speed: " + Math.round(data.current.wind_speed) + " MPH");
     $("#conditions").text(data.current.weather[0].main);
     $("#weather-image").addClass(getWeatherImage(data.current.weather[0].main));
 
-        $("#5-day-container").remove();
-        var containerEle = document.createElement("div");
-        containerEle.className = "columns is-flex content";
-        containerEle.id = "5-day-container";
-
-        var headerEl = document.createElement("div");
-        headerEl.classList = "content pt-5 pl-4";
-        var textEl = document.createElement("h2");
-        textEl.textContent = "Looking to the next 5 days:";
-        headerEl.appendChild(textEl);
-
-        $("#5-day").append(headerEl);
-        $("#5-day").append(containerEle);
-
     // 5 day forecast
+    // remove old container and create new div to house content
+    $("#5-day-container").remove();
+    if ($("#headerText").length) {
+        $("#headerText").remove();
+    }
+    var containerEle = document.createElement("div");
+    containerEle.className = "columns is-flex content";
+    containerEle.id = "5-day-container";
+
+    // create header for the card
+    var headerEl = document.createElement("div");
+    headerEl.classList = "content pt-3 pl-4";
+    headerEl.id = "headerText";
+    var textEl = document.createElement("h2");
+    textEl.textContent = "Looking to the next 5 days:";
+    headerEl.appendChild(textEl);
+
+    $("#5-day").append(headerEl);
+    $("#5-day").append(containerEle);
+
+    // create each day
     for (var i = 0; i < 5; i++) {
         var containerEl = document.createElement("div");
-        containerEl.className = "column five-day content";
+        containerEl.className = "column five-day content is-flex-shrink-0";
         containerEl.id = "day-" + (i+1);
 
-        var dateEl = document.createElement("h2");
-        dateEl.textContent = "Day " + (i+1);
+        var dateEl = document.createElement("h4");
+        dateEl.textContent = dayjs().add(i+1,'day').format('MM/DD/YY');
 
         var weatherImageEl = document.createElement("i");
         weatherImageEl.className = "fa fa-2x " + getWeatherImage(data.daily[i].weather[0].main);
@@ -90,16 +101,55 @@ var updateWeatherInfo = function (data) {
     }
 }
 
-var loadFromStorage = function (city) {
-    var data = localStorage.getItem("cityData")
-    return JSON.parse(data);
+var addRecentCity = function (index) {
+    var textBtn = document.createElement("button");
+    textBtn.classList = "px-3 recent-city-list";
+    textBtn.id = index;
+    textBtn.textContent = recentCities[index].city + ", " + recentCities[index].state + " " + recentCities[index].country;
+
+    document.querySelector(".recent-cities").appendChild(textBtn);
 }
 
-var saveToStorage = function (data) {
-    localStorage.setItem("cityData", JSON.stringify(data));
+var loadFromStorage = function () {
+    recentCities = JSON.parse(localStorage.getItem("cities"));
+    if (recentCities) {
+        $(".recent-cities").text("");
+        recentCities.forEach(function(element, index) {
+            addRecentCity(index);
+        });
+    }
+}
+
+var saveToStorage = function (locationInfo) {
+    if (recentCities) {
+        // if there's 10 saved, delete oldest one
+        if (recentCities.length > 9) {
+            recentCities.splice(0, 1);
+            $("#" + 0).remove();
+        }
+
+        var cityNeedsAdded = true;
+        for (var i = 0; i < recentCities.length; i++) {
+            if (locationInfo.city == recentCities[i].city) {
+                cityNeedsAdded = false
+                i = recentCities.length;
+                return;
+            }
+        }
+        if (cityNeedsAdded) {
+            recentCities.push(locationInfo);
+            addRecentCity(i);
+        }
+    // there are no cities saved to local storage yet
+    } else {
+        recentCities = [locationInfo];
+        addRecentCity(0);
+    }
+    localStorage.setItem("cities", JSON.stringify(recentCities));
 }
 
 var getWeatherInfo = function (areaOfSearch) {
+    // get location in lat and lon based on search results from browser
     var appid = "c66c7201cb23e0dca6ae60ccc9c0c236";
     if (areaOfSearch.length === 1) {
         var geoLocationApi = 'https://api.openweathermap.org/geo/1.0/direct?q=' + areaOfSearch[0] + '&appid=' + appid;
@@ -111,26 +161,23 @@ var getWeatherInfo = function (areaOfSearch) {
         alert("Too many search parameters");
         return;
     }
-    var localData = loadFromStorage(areaOfSearch[0]);
-    if (localData) {
-        $("#city-name").text(areaOfSearch[0]);
-        $("#secondary-name").text(areaOfSearch[1] +", " + areaOfSearch[2]);
-        updateWeatherInfo(localData);
-        return;
-    }
     fetch(geoLocationApi).then(function(response) {
 		if (response.ok) {
 			response.json().then(function(data) {
 				if (data.length > 0) {
                     $("#city-name").text(data[0].name);
                     $("#secondary-name").text(data[0].state +", " + data[0].country);
+                    var locationInfo = {city: data[0].name, state: data[0].state, country: data[0].country};
+                    
+                    // get lat and lon from data supplied by user and first apit
+                    // pass the location to the second api to get weather information
                     var lat = data[0].lat;
                     var lon = data[0].lon;
                     var weatherApi = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude=hourly,alerts&appid=" + appid + "&units=imperial";
                     fetch(weatherApi).then(function(response) {
                         if (response.ok) {
                             response.json().then(function(data) {
-                                saveToStorage(data);
+                                saveToStorage(locationInfo);
                                 updateWeatherInfo(data);
                             });
                         } else {
@@ -138,18 +185,24 @@ var getWeatherInfo = function (areaOfSearch) {
                         }
                     });
                 } else {
-                    alert("No such city");
+                    alert("No city found");
                 }
 			});
 		} else {
-			alert("No city found!");
+			alert("No city found");
 		}
 	});
 }
 
-$("#display-iframe").click(function () {  
+$("#search").on("click", function () {  
     var lookUp = $(".input").val().split(",");
     getWeatherInfo(lookUp);
 });
 
-getWeatherInfo(["London", "England", "GB"]);
+$(".recent-cities").on("click", function (callback) {  
+    var index = callback.target.id;
+    var translate = [recentCities[index].city, recentCities[index].state, recentCities[index].country];
+    getWeatherInfo(translate);
+})
+
+loadFromStorage();

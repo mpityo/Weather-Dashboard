@@ -12,7 +12,7 @@
 <body>
     <nav class="navbar is-info" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            <h2 class="title">Your weather dashboard</h2>
+            <h2 class="title">Weather Dashboard</h2>
         </div>
     </nav>
 
@@ -30,13 +30,13 @@
                         </span>
                     </p>
                 </div>
-                <button class="button is-success is-fullwidth" id="display-iframe">iFrame</button>
+                <button class="button is-success is-fullwidth" id="search">Search</button>
             </div>
             <div class="panel">
                 <p class="panel-heading">
                     Recently searched cities
                 </p>
-                <div class="recent-cities panel-block">
+                <div class="recent-cities panel-block is-flex-direction-column">
                     No cities have been searched recently
                 </div>
             </div>
@@ -44,9 +44,9 @@
 
         <div class="column is-8">
             <div class="mx-1 content">
-                <h1 id="current-date"><heavy>Thursday</heavy> February 3, 2022</h1>
+                <h1 id="current-date"></h1>
             </div>
-            <div class="mx-1 columns is-flex" id="current-weather">
+            <div class="mx-3 columns is-flex" id="current-weather">
                 <div class="column is-narrow">
                     <div class="content" style="width: 250px;">
                         <h1 class="mb-1" id="city-name" style="font-size: 3rem;"></h1>
@@ -54,7 +54,7 @@
                     </div>
                     <div class="block" id="extra-info">
                         <div class="columns mt-0 mb-0 is-flex" id="uv-index-container">
-                            <p class="column is-narrow pt-0 pb-0 is-flex-grow-0">UV Index: </p>
+                            <p class="column is-narrow pt-0 pb-0 is-flex-grow-0" id="uv-index-wordage"></p>
                             <p class="px-2" id="uv-index" style="border-radius: 10px;"></p>
                         </div>
                           	<p id="humidity"></p>
@@ -79,11 +79,12 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-5 content card" id="5-day"></div>
+            <div class="mt-5 mx-3 content" id="5-day"></div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.7/dayjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/open-weather/2.0.0/openweather.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="./assets/js/script.js"></script>
