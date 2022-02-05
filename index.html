@@ -46,18 +46,17 @@
             <div class="mx-1 content">
                 <h1 id="current-date"><heavy>Thursday</heavy> February 3, 2022</h1>
             </div>
-            <div class="mx-1 columns" id="current-weather">
+            <div class="mx-1 columns is-flex" id="current-weather">
                 <div class="column is-narrow">
                     <div class="content" style="width: 250px;">
                         <h1 class="mb-1" id="city-name" style="font-size: 3rem;"></h1>
                         <h4 class="mt-0" id="secondary-name"></h4>
                     </div>
                     <div class="block" id="extra-info">
-                            <p id="uv-index-container">
-	                            <div id="uv-index-color" style="width: 40px; border-radius: 10px; padding:3px; display:flex;">
-									<p id="uv-index"></p>
-	                            </div>
-                            </p>
+                        <div class="columns mt-0 mb-0 is-flex" id="uv-index-container">
+                            <p class="column is-narrow pt-0 pb-0 is-flex-grow-0">UV Index: </p>
+                            <p class="px-2" id="uv-index" style="border-radius: 10px;"></p>
+                        </div>
                           	<p id="humidity"></p>
                             <p id="wind"></p>
                     </div>
@@ -71,23 +70,23 @@
                         </div>
                     </div>
                     <div class="block">
-                        <div class="content">
-                            <span class="icon is-left">
-                                <img id="weather-image" aria-hidden="true"></i>
+                        <div class="content columns is-flex">
+                            <h2 class="column is-narrow is-flex-grow-0" id="conditions"></h2>
+                            <span class="icon is-left column">
+                                <i class="fa fa-3x" id="weather-image" aria-hidden="true"></i>
                             </span>
-                            <h2 id="conditions"></h2>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="mx-1 mt-2 px-4 pt-3 content" id="5-day">
                 <h2>Looking to the next 5 days:</h2>
-                <div class="columns">
-                    <div class="column is-one-fifth">Day 1</div>
-                    <div class="column">Day 2</div>
-                    <div class="column">Day 3</div>
-                    <div class="column">Day 4</div>
-                    <div class="column">Day 5</div>
+                <div class="columns is-flex">
+                    <div class="column five-day">Day 1</div>
+                    <div class="column five-day">Day 2</div>
+                    <div class="column five-day">Day 3</div>
+                    <div class="column five-day">Day 4</div>
+                    <div class="column five-day">Day 5</div>
                 </div>
             </div>
         </div>
