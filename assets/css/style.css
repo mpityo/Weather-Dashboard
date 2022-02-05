@@ -1,4 +1,17 @@
-iframe {
-    width: fit-content;
-    height: min-content;
+.five-day {
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.recent-city-list {
+    border-radius: 5px;
+    background-color: rgba(197, 194, 194, 0.582);
+    color: black;
+    width: 100%;
+    margin: 5px 0;
+    cursor: pointer;
+}
+
+.navbar {
+    justify-content: center;
 }

@@ -12,7 +12,7 @@
 <body>
     <nav class="navbar is-info" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            <h2 class="title">Your weather dashboard</h2>
+            <h2 class="title">Weather Dashboard</h2>
         </div>
     </nav>
 
@@ -20,7 +20,7 @@
         <div class="column">
             <div class="panel">
                 <p class="panel-heading">
-                    Enter a city name to find weather
+                    Search for a city
                 </p>
                 <div class="panel-block">
                     <p class="control has-icons-left">
@@ -30,24 +30,61 @@
                         </span>
                     </p>
                 </div>
-                <button class="button is-success is-fullwidth" id="display-iframe">iFrame</button>
+                <button class="button is-success is-fullwidth" id="search">Search</button>
             </div>
             <div class="panel">
                 <p class="panel-heading">
-                    Recently searched cities
+                    10 most recently searched cities
                 </p>
-                <div class="recent-cities panel-block">
+                <div class="recent-cities panel-block is-flex-direction-column">
                     No cities have been searched recently
                 </div>
             </div>
         </div>
 
         <div class="column is-8">
-            <iframe src="" name="targetframe" allowTransparency="true" scrolling="no" frameborder="0" style="width: 100%; height: 500px;">
-            </iframe>
+            <div class="mx-1 content">
+                <h1 id="current-date"></h1>
+            </div>
+            <div class="mx-3 columns is-flex" id="current-weather">
+                <div class="column is-narrow">
+                    <div class="content" style="width: 250px;">
+                        <h1 class="mb-1" id="city-name" style="font-size: 3rem;"></h1>
+                        <h4 class="mt-0" id="secondary-name"></h4>
+                    </div>
+                    <div class="block" id="extra-info">
+                        <div class="columns mt-0 mb-0 is-flex" id="uv-index-container">
+                            <p class="column is-narrow pt-0 pb-0 is-flex-grow-0" id="uv-index-wordage"></p>
+                            <p class="px-2" id="uv-index" style="border-radius: 10px;"></p>
+                        </div>
+                          	<p id="humidity"></p>
+                            <p id="wind"></p>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="content columns is-gapless is-vcentered">
+                        <h1 class="mb-0" id="current-temp" style="font-size: 5rem;"></h1>
+                        <div class="ml-1">
+                            <p class="" id="hi-temp"></p>
+                            <p class="" id="low-temp"></p>
+                        </div>
+                    </div>
+                    <div class="block">
+                        <div class="content columns is-flex">
+                            <h2 class="column is-narrow is-flex-grow-0" id="conditions"></h2>
+                            <span class="icon is-left column">
+                                <i class="fa fa-3x" id="weather-image" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-5 mx-3 content" id="5-day"></div>
+            </div>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.7/dayjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/open-weather/2.0.0/openweather.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="./assets/js/script.js"></script>
